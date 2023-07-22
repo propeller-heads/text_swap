@@ -5,7 +5,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #380a53;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -18,13 +18,19 @@ html, body{
   scroll-behavior: smooth;
 }
 
+.header {
+  display: grid;
+  align-items: center; 
+  grid-template-columns: 1fr 1fr 1fr;
+ }
+
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
   text-align: center;
   position: sticky;
   top: 0;
-  background-color: #242424;
+  background-color: #380a53;
 }
 
 main{
@@ -32,8 +38,13 @@ main{
   margin: auto;
 }
 
+input{
+  background-color: #461b5d;
+  border-radius: 50px;
+}
+
 p{
-  background-color: darkslategray;
+  background-color: #ffcc00;
   max-width: 70%;
   padding: 15px;
   border-radius: 50px;
@@ -41,6 +52,7 @@ p{
 
 p span{
   margin: 5px;
+  color: #000000
 }
 
 p span:first-child{
