@@ -22,8 +22,8 @@ function App({ account, setAccount }){
 
     setMessage("");
     var request_data = {
-      "message": message,
-      "wallet": account,
+      "user_query": message,
+      "wallet_address": account,
     }
     console.log(request_data);
 
