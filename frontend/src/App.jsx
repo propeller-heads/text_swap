@@ -2,28 +2,36 @@ import { useState } from "react";
 import "./App.css";
 import axios from 'axios';
 import logo from "./assets/logo.png";
-import { placeFusionOrder } from './fusion/fusion_order'
 import { getTokenDecimals } from './web3';
-
+import { Buffer } from 'buffer';
+import { FusionSDK } from '@1inch/fusion-sdk'
+import { Web3ProviderConnector } from './fusion/provider'
 
 function App({ account, setAccount }){
+  window.Buffer = Buffer;
   const [message, setMessage] = useState("");
   const [chats, setChats] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const [provider, setProvider] = useState(undefined);
 
   const handleFormSubmit: MainFormProps['onSubmit'] = async (data) => {
-      // Handle form submission here
-      const sellAmount = +data["sellAmount"] * 10 ** await getTokenDecimals(data["sellToken"]);
-      const buyAmount = +data["buyAmount"] * 10 ** await getTokenDecimals(data["buyToken"]);
-      const order = await placeFusionOrder(
-          data["sellToken"],
-          data["buyToken"],
-          sellAmount.toString(),
-          provider.provider.selectedAddress,
-          provider,
-      )
-      // JSON.stringify(order)
+    // Handle form submission here
+    const sellAmount = +data["sellAmount"] * 10 ** await getTokenDecimals(data["sellToken"]);
+    const buyAmount = +data["buyAmount"] * 10 ** await getTokenDecimals(data["buyToken"]);
+
+    const blockchainProvider = new Web3ProviderConnector(provider)
+    const sdk = new FusionSDK({
+        url: 'https://fusion.1inch.io',
+        network: 1,
+        blockchainProvider: blockchainProvider,
+    });
+    sdk.placeOrder({
+        fromTokenAddress: data["sellToken"],
+        toTokenAddress: data["buyToken"],
+        amount: sellAmount.toString(),
+        walletAddress: provider.provider.selectedAddress
+    }).then(console.log)
+
   };
 
   const chat = async (e, message) => {
