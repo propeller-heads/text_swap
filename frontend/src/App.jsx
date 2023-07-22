@@ -2,7 +2,7 @@ import { useState } from "react";
 import "./App.css";
 import axios from 'axios';
 import logo from "./assets/logo.png";
-
+import { FusionSDK, NetworkEnum, getLimitOrderV3Domain } from '@1inch/fusion-sdk'
 
 function App({ account, setAccount }){
   const [message, setMessage] = useState("");
