@@ -42,11 +42,8 @@ function App({ account, setAccount }){
       var msg = data.message;
       msg = msg.replace(/^"|"$/g, '');
 
-      msgs.push({ role: "agent",
-                content: msg});
       setChats(msgs);
       setIsTyping(false);
-      setChats(msgs);
       window.scrollTo(0, 1e10);
     }).catch((error) => {
       console.log(error);
