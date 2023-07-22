@@ -7,7 +7,7 @@ import axios from 'axios';
 import logo from "./assets/logo.png";
 import ChatWithButtonPair from './components/submitButton.tsx';
 
-function App({ account, setAccount }){
+function App({ wallet }){
   const [message, setMessage] = useState("");
   const [chats, setChats] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
@@ -87,7 +87,8 @@ function App({ account, setAccount }){
     setMessage("");
     var request_data = {
       "user_query": message,
-      "wallet_address": account,
+      "wallet_address": wallet.account,
+      "token_balances": {[wallet.chain.symbol]: wallet.balance},
     }
     console.log(request_data);
 

@@ -2,16 +2,21 @@ import React, { useState } from 'react';
 import { MetaMaskSDK } from '@metamask/sdk';
 import { blockchainConfig } from './config'
 
-interface MetaMaskProps {
-  account: string | undefined;
-  setAccount: React.Dispatch<React.SetStateAction<string | undefined>>;
+export interface WalletState {
+  account: string | undefined,
+  balance: string,
+  chain: any,
 }
 
-const MetaMaskComponent: React.FC<MetaMaskProps>= ({ account, setAccount }) => {
+
+interface MetaMaskProps {
+  wallet: WalletState | undefined;
+  setWallet: React.Dispatch<React.SetStateAction<WalletState | undefined>>;
+}
+
+export const MetaMaskComponent: React.FC<MetaMaskProps>= ({ wallet, setWallet }) => {
     const MMSDK = new MetaMaskSDK()
     const ethereum = window.ethereum;
-    const [balance, setBalance] = React.useState<string>("0");
-    const [chain, setChain] = React.useState<any>(null);
 
     const formatBalance = (rawBalance: string) => {
       const balance = (parseInt(rawBalance) / 1000000000000000000).toFixed(2)
@@ -40,12 +45,13 @@ const MetaMaskComponent: React.FC<MetaMaskProps>= ({ account, setAccount }) => {
               }) as string
               try {
                 const chain = blockchainConfig[chainId];
-                setChain(chain);
+                setWallet(
+                  { account: Accounts[0], balance: balance, chain: chain }
+                );
+                console.log("chainID", chain);
               } catch (error){
                 console.log(error, "chain not supported")
               }
-              setBalance(balance);
-              setAccount(Accounts[0]); // Store the connected account in the state
             } else {
               console.error('No accounts found in MetaMask.');
             }
@@ -62,11 +68,11 @@ const MetaMaskComponent: React.FC<MetaMaskProps>= ({ account, setAccount }) => {
     return (
   <header>
     <div className="connectBtns">
-      {account ? (
+      {wallet && wallet.account ? (
         <div className="wallet-info">
-          {chain && <div className="connected-wallet">{chain.name}</div>}
-          {chain && <div className="connected-wallet">{balance} {chain.symbol}</div>}
-          {account && chain && <div className="connected-wallet">{account.slice(0,3)}..{account.slice(-3)}</div>}
+          {wallet && wallet.chain && <div className="connected-wallet">{wallet.chain.name}</div>}
+          {wallet && wallet.balance && <div className="connected-wallet">{wallet.balance} {wallet.chain.symbol}</div>}
+          {wallet && wallet.account && <div className="connected-wallet">{wallet.account.slice(0,3)}..{wallet.account.slice(-3)}</div>}
         </div>
       ) : (
         <button className="connect-wallet-button" onClick={ConnectToMetaMask}>

@@ -1,17 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import MetaMaskComponent from './metamask';
+import { MetaMaskComponent, WalletState } from './metamask';
 
 const RootComponent: React.FC = () => {
-  const [account, setAccount] = React.useState<string | undefined>('');
+    const disconnectedState: WalletState = { account: '', balance: '', chain: '' }
+    const [wallet, setWallet] = React.useState<WalletState | undefined>(disconnectedState);
+
 
   return (
     <React.StrictMode>
-      <MetaMaskComponent account={account} setAccount={setAccount} />
-      <App account={account} setAccount={setAccount} />
+      <MetaMaskComponent wallet={wallet} setWallet={setWallet} />
+      <App wallet={wallet}/>
     </React.StrictMode>
   );
 };
