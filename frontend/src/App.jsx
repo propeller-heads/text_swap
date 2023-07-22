@@ -1,6 +1,8 @@
 import { useState } from "react";
 import "./App.css";
 import axios from 'axios';
+import logo from "./assets/logo.png";
+
 
 function App() {
   const [message, setMessage] = useState("");
@@ -43,11 +45,15 @@ function App() {
 
   return (
     <main>
-      <h1>Text Swap</h1>
+      <div className="header">
+        <img src={logo} className="App-logo" alt="broken" />
+        <h1>Text Swap</h1>
+      </div>
+
       <section>
         {chats && chats.length
           ? chats.map((chat, index) => (
-              <p key={index} className={chat.role === "user" ? "user_msg" : ""}>
+              <p key={index} className={chat.role === "user" ? "user_msg" : "agent_msg"}>
                 <span>{chat.content}</span>
               </p>
             ))
@@ -60,7 +66,7 @@ function App() {
         </p>
       </div>
 
-      <form action="" onSubmit={(e) => chat(e, message)}>
+      <form action="" onSubmit={(e) => chat(e, message)} >
         <input
           type="text"
           name="message"
