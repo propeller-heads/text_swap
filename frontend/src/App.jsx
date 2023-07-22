@@ -8,6 +8,50 @@ function App({ account, setAccount }){
   const [message, setMessage] = useState("");
   const [chats, setChats] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
+
+  function yesButtonFuction(index){
+    setChats((prevChats) => {
+      const newChats = [...prevChats]; // Create a new copy of the chats array
+      newChats[index] = {
+        ...newChats[index],
+        buttons: {
+          ...newChats[index].buttons,
+          no: "disabled",
+          yes: "used"
+        },
+      };
+      return newChats;
+    });
+
+    // call api back
+
+
+  }
+
+  function noButtonFunction(index){
+    // Create a new copy of the chats array
+    const newChats = [...chats];
+
+    // Update the button states for the specific chat at the given index
+    newChats[index] = {
+      ...newChats[index],
+      buttons: {
+        yes: "disabled",
+        no: "used",
+      },
+    };
+
+    // Add a new agent message with both buttons disabled
+    newChats.push({
+      role: "agent",
+      content: { message: "What can I do for you?" },
+      buttons: { yes: "disabled", no: "disabled" },
+    });
+
+    // Set the updated chats array
+    setChats(newChats);
+  }
+  
   const chat = async (e, message) => {
     e.preventDefault();
 
@@ -16,7 +60,7 @@ function App({ account, setAccount }){
     window.scrollTo(0, 1e10);
 
     let msgs = chats;
-    msgs.push({ role: "user", content: {"message": message}, buttons:{yes: true, no: true}});
+    msgs.push({ role: "user", content: {"message": message}, buttons:{yes: "disabled", no: "disabled"}});
     setChats(msgs);
 
     setMessage("");
@@ -33,10 +77,10 @@ function App({ account, setAccount }){
       console.log(JSON.parse(data.message));
 
       if (data.intent) {
-        msgs.push({ role: "agent", content: data, buttons:{yes: false, no: false}});
+        msgs.push({ role: "agent", content: data, buttons:{yes: "enabled", no: "enabled"}});
       }
       else{
-        msgs.push({ role: "agent", content: data, buttons:{yes: true, no: true}});
+        msgs.push({ role: "agent", content: data, buttons:{yes: "enabled", no: "enabled"}});
       }
 
       var msg = data.message;
@@ -60,7 +104,7 @@ function App({ account, setAccount }){
       <section>
         {chats && chats.length
           ? chats.map((chat, index) => (
-            <ChatWithButtonPair chat={chat} onYesClick={() => console.log("Print yes")} onNoClick={() =>console.log("print nein")} isYesDisabled={chat.buttons?.yes} isNoDisabled={chat.buttons?.no}/>
+            <ChatWithButtonPair chat={chat} onYesClick={() => yesButtonFuction(index)} onNoClick={() => noButtonFunction(index)} isYesDisabled={chat.buttons?.yes} isNoDisabled={chat.buttons?.no}/>
             ))
           : ""}
       </section>

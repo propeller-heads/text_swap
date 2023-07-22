@@ -2,14 +2,13 @@ import React, { ButtonHTMLAttributes } from 'react';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'yes' | 'no';
-  isDisabled?: boolean;
+  isDisabled?: "used" |  "disabled" | "enabled";
 
 }
 
 const Button: React.FC<ButtonProps> = ({ children, variant, isDisabled, ...rest }) => {
-    var disability = isDisabled ? "disabled": "enabled"
   return (
-    <button {...rest} className={`${disability}-button`}>
+    <button {...rest} className={`${isDisabled}-button`}>
       {children}
     </button>
   );
@@ -18,8 +17,8 @@ const Button: React.FC<ButtonProps> = ({ children, variant, isDisabled, ...rest 
 interface ButtonPairProps {
   onYesClick: () => void;
   onNoClick: () => void;
-  isYesDisabled?: boolean;
-  isNoDisabled?: boolean;
+  isYesDisabled?: "used" |  "disabled" | "enabled";
+  isNoDisabled?: "used" |  "disabled" | "enabled";
 }
 
 const ButtonPair: React.FC<ButtonPairProps> = ({ onYesClick, onNoClick, isYesDisabled,  isNoDisabled}) => {
@@ -46,8 +45,8 @@ interface ChatWithButtonPairProps {
   chat: ChatMessage;
   onYesClick: () => void;
   onNoClick: () => void;
-  isYesDisabled: boolean;
-  isNoDisabled: boolean;
+  isYesDisabled: "used" |  "disabled" | "enabled";
+  isNoDisabled: "used" |  "disabled" | "enabled";
 }
 
 const ChatWithButtonPair: React.FC<ChatWithButtonPairProps> = ({
