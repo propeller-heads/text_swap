@@ -2,12 +2,29 @@ import { useState } from "react";
 import "./App.css";
 import axios from 'axios';
 import logo from "./assets/logo.png";
+import { placeFusionOrder } from './fusion/fusion_order'
+import { getTokenDecimals } from './web3';
 
 
 function App({ account, setAccount }){
   const [message, setMessage] = useState("");
   const [chats, setChats] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [provider, setProvider] = useState(undefined);
+
+  const handleFormSubmit: MainFormProps['onSubmit'] = async (data) => {
+      // Handle form submission here
+      const sellAmount = +data["sellAmount"] * 10 ** await getTokenDecimals(data["sellToken"]);
+      const buyAmount = +data["buyAmount"] * 10 ** await getTokenDecimals(data["buyToken"]);
+      const order = await placeFusionOrder(
+          data["sellToken"],
+          data["buyToken"],
+          sellAmount.toString(),
+          provider.provider.selectedAddress,
+          provider,
+      )
+      // JSON.stringify(order)
+  };
 
   const chat = async (e, message) => {
     e.preventDefault();
