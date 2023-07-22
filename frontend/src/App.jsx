@@ -5,7 +5,7 @@ import { Web3ProviderConnector } from "./provider.ts"
 import "./App.css";
 import axios from 'axios';
 import logo from "./assets/logo.png";
-
+import ChatWithButtonPair from './components/submitButton.tsx';
 
 function App({ account, setAccount }){
   const [message, setMessage] = useState("");
@@ -30,6 +30,49 @@ function App({ account, setAccount }){
     }).then(console.log)
   }
 
+  function yesButtonFuction(index){
+    setChats((prevChats) => {
+      const newChats = [...prevChats]; // Create a new copy of the chats array
+      newChats[index] = {
+        ...newChats[index],
+        buttons: {
+          ...newChats[index].buttons,
+          no: "disabled",
+          yes: "used"
+        },
+      };
+      return newChats;
+    });
+
+    // call api back
+
+
+  }
+
+  function noButtonFunction(index){
+    // Create a new copy of the chats array
+    const newChats = [...chats];
+
+    // Update the button states for the specific chat at the given index
+    newChats[index] = {
+      ...newChats[index],
+      buttons: {
+        yes: "disabled",
+        no: "used",
+      },
+    };
+
+    // Add a new agent message with both buttons disabled
+    newChats.push({
+      role: "agent",
+      content: { message: "What can I do for you?" },
+      buttons: { yes: "disabled", no: "disabled" },
+    });
+
+    // Set the updated chats array
+    setChats(newChats);
+  }
+  
   const chat = async (e, message) => {
     e.preventDefault();
 
@@ -38,7 +81,7 @@ function App({ account, setAccount }){
     window.scrollTo(0, 1e10);
 
     let msgs = chats;
-    msgs.push({ role: "user", content: message });
+    msgs.push({ role: "user", content: {"message": message}, buttons:{yes: "disabled", no: "disabled"}});
     setChats(msgs);
 
     setMessage("");
@@ -52,19 +95,22 @@ function App({ account, setAccount }){
       const data = res.data; // Access the parsed JSON data directly from res.data
       console.log(data);
 
+      if (data.intent) {
+        msgs.push({ role: "agent", content: data, buttons:{yes: "enabled", no: "enabled"}});
+      }
+      else{
+        msgs.push({ role: "agent", content: data, buttons:{yes: "enabled", no: "enabled"}});
+      }
 
       var msg = data.message;
       msg = msg.replace(/^"|"$/g, '');
 
-      msgs.push({ role: "agent",
-                content: msg});
       setChats(msgs);
       setIsTyping(false);
       window.scrollTo(0, 1e10);
     }).catch((error) => {
       console.log(error);
     });
-
   };
 
   return (
@@ -75,16 +121,9 @@ function App({ account, setAccount }){
       </div>
 
       <section>
-            {chats && chats.length
-              ? chats.map((chat, index) => (
-                  <p key={index} className={chat.role === "user" ? "user_msg" : "agent_msg"}>
-        {chat.content.split('\\n').map((line, index, array) => (
-          <span key={index}>
-            {line}
-            {index !== array.length - 1 && <br />}
-          </span>
-        ))}
-              </p>
+        {chats && chats.length
+          ? chats.map((chat, index) => (
+            <ChatWithButtonPair chat={chat} onYesClick={() => yesButtonFuction(index)} onNoClick={() => noButtonFunction(index)} isYesDisabled={chat.buttons?.yes} isNoDisabled={chat.buttons?.no}/>
             ))
           : ""}
       </section>
