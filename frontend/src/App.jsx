@@ -31,9 +31,14 @@ function App({ account, setAccount }){
     .then((res) => {
       const data = res.data; // Access the parsed JSON data directly from res.data
       console.log(data);
-      console.log(data.message);
+      console.log(JSON.parse(data.message));
 
-      msgs.push({ role: "agent", content: data.message });
+
+      var msg = data.message;
+      msg = msg.replace(/^"|"$/g, '');
+
+      msgs.push({ role: "agent",
+                content: msg});
       setChats(msgs);
       setIsTyping(false);
       window.scrollTo(0, 1e10);
@@ -51,10 +56,15 @@ function App({ account, setAccount }){
       </div>
 
       <section>
-        {chats && chats.length
-          ? chats.map((chat, index) => (
-              <p key={index} className={chat.role === "user" ? "user_msg" : "agent_msg"}>
-                <span>{chat.content}</span>
+            {chats && chats.length
+              ? chats.map((chat, index) => (
+                  <p key={index} className={chat.role === "user" ? "user_msg" : "agent_msg"}>
+        {chat.content.split('\\n').map((line, index, array) => (
+          <span key={index}>
+            {line}
+            {index !== array.length - 1 && <br />}
+          </span>
+        ))}
               </p>
             ))
           : ""}
