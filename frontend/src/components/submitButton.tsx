@@ -57,11 +57,15 @@ const ChatWithButtonPair: React.FC<ChatWithButtonPairProps> = ({
   isYesDisabled,
   isNoDisabled,
 }) => {
-
+      
   return (
     <div>
       <p className={chat.role === "user" ? "user_msg" : "agent_msg"}>
-        <span>{chat.content.message}</span>
+      {chat.content.message.split('\\n').map((line, index, array) => (
+    <span key={index}>
+      {line}
+      {index !== array.length - 1 && <br />}
+    </span>))}
       </p>
       <ButtonPair
         onYesClick={onYesClick}
