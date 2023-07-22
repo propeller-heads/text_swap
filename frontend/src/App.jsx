@@ -45,8 +45,6 @@ function App({ wallet }){
     });
 
     // call api back
-
-
   }
 
   function noButtonFunction(index){
@@ -87,8 +85,13 @@ function App({ wallet }){
     setMessage("");
     var request_data = {
       "user_query": message,
-      "wallet_address": wallet.account,
-      "token_balances": {[wallet.chain.symbol]: wallet.balance},
+      "wallet_address": "",
+      "token_balances": {}
+    };
+
+    if (wallet.account !== "") {
+      request_data.wallet_address = wallet.account;
+      request_data.token_balances = { [wallet.chain.symbol]: wallet.balance };
     }
     console.log(request_data);
 
