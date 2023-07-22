@@ -103,7 +103,7 @@ function App({ wallet }){
         msgs.push({ role: "agent", content: data, buttons:{yes: "enabled", no: "enabled"}});
       }
       else{
-        msgs.push({ role: "agent", content: data, buttons:{yes: "enabled", no: "enabled"}});
+        msgs.push({ role: "agent", content: data, buttons:{yes: "disabled", no: "disabled"}});
       }
 
       var msg = data.message;
