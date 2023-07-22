@@ -1,10 +1,12 @@
 import { useState } from "react";
 import "./App.css";
+import axios from 'axios';
 
 function App() {
   const [message, setMessage] = useState("");
   const [chats, setChats] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
+
 
   const chat = async (e, message) => {
     e.preventDefault();
@@ -18,26 +20,25 @@ function App() {
     setChats(msgs);
 
     setMessage("");
+    var request_data = {
+      "message": message
+      // TODO: Add metamask data here
+    }
 
-    fetch("http://localhost:8000/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        chats,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        msgs.push(data.output);
-        setChats(msgs);
-        setIsTyping(false);
-        window.scrollTo(0, 1e10);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    axios.post("http://localhost:8000/chat", request_data)
+    .then((res) => {
+      const data = res.data; // Access the parsed JSON data directly from res.data
+      console.log(data);
+      console.log(data.message);
+
+      msgs.push({ role: "agent", content: data.message });
+      setChats(msgs);
+      setIsTyping(false);
+      window.scrollTo(0, 1e10);
+    }).catch((error) => {
+      console.log(error);
+    });
+
   };
 
   return (
