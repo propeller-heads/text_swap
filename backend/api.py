@@ -1,9 +1,9 @@
+import json
 import os
 from logging import getLogger
 from typing import Optional
 
 import openai
-import requests
 from dotenv import load_dotenv
 from eth_utils import to_checksum_address
 from fastapi import FastAPI
@@ -62,11 +62,20 @@ async def chat(message: Message):
     api_output = {}
     try:
         swap_dict = eval(gpt_response)
-        api_output["message"] = str(swap_dict)
-        api_output["swap_response"] = True
+        formatted_swaps = ""
+        for idx, swap in enumerate(swap_dict.values()):
+            formatted_swaps = (
+                formatted_swaps
+                + f"> {swap['amount_in']} {swap['token_in']} to {swap['token_out']}"
+            )
+            if idx != len(swap_dict) - 1:
+                formatted_swaps += "\n"
+
+        message = f"Would you like to execute those swaps? \n{formatted_swaps}"
+        api_output["message"] = json.dumps(message)
+        api_output["data"] = swap_dict
     except SyntaxError:
         api_output["message"] = gpt_response
-        api_output["swap_response"] = False
 
     return api_output
 
