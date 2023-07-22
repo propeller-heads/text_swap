@@ -4,9 +4,7 @@ import requests
 url = "http://localhost:8000/chat"
 
 # JSON data to send in the request body
-data = {
-    "message": "Your message goes here"
-}
+data = {"message": "Your message goes here"}
 
 # Make the POST request
 response = requests.post(url, json=data)
