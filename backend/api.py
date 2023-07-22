@@ -11,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from web3 import Web3
 from web3.providers import HTTPProvider
-from backend.chatgpt_prompt import CHATGPT_PROMPT
+from chatgpt_prompt import CHATGPT_PROMPT
 
 load_dotenv()
 
@@ -57,6 +57,7 @@ async def chat(message: Message):
         model="gpt-4", messages=[{"role": "user", "content": full_prompt}]
     )
     gpt_response = chat_completion.choices[0].message.content
+    return gpt_response
 
     # Send result to user
     # (with token descriptions (link to coingecko or smth))
