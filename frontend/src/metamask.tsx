@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { MetaMaskSDK } from '@metamask/sdk';
 
-const MetaMaskComponent: React.FC = () => {
-    const [connectedToMetaMask, setConnectedToMetaMask] = useState(false);
-    const [account, setAccount] = useState<string | undefined >("");;
+interface MetaMaskProps {
+  account: string | undefined;
+  setAccount: React.Dispatch<React.SetStateAction<string | undefined>>;
+}
 
+const MetaMaskComponent: React.FC<MetaMaskProps>= ({ account, setAccount }) => {
     const MMSDK = new MetaMaskSDK() // TODO: USE REAL SDK
-
     const ethereum = window.ethereum;
 
     const ConnectToMetaMask = async () => {
@@ -19,8 +20,6 @@ const MetaMaskComponent: React.FC = () => {
             });
             if (Accounts && Accounts.length > 0) {
               console.log('Connected to MetaMask!', Accounts);
-              setConnectedToMetaMask(true);
-              console.log(Accounts);
               setAccount(Accounts[0]); // Store the connected account in the state
             } else {
               console.error('No accounts found in MetaMask.');
@@ -37,7 +36,7 @@ const MetaMaskComponent: React.FC = () => {
 
     return (
     <div className="connectBtns">
-      {connectedToMetaMask ? (
+      {account ? (
         <div>
           {account && <p>Connected Account: {account}</p>}
         </div>
