@@ -26,7 +26,7 @@ Assumptions:
 
 3. If specified, use the amount to swap provided by the user.
 
-4. Also assume that the user never wants to sell all its ETH as it is usually needed to pay gas fees.
+4. Also make sure that the user never sells all his ETH as it is needed to pay gas fees.
 
 5. Unless specified, assume the swaps should be executed on the Ethereum blockchain. So only suggest token swaps possible on that blockchain.
 
