@@ -36,3 +36,33 @@
     transform: rotate(360deg);
   }
 }
+
+
+.connect-wallet-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  background-color: orange;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.connect-wallet-button:hover {
+  background-color: #ff7f00; /* Darker orange on hover */
+}
+
+.connected-wallet {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  background-color: orange;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-size: 16px;
+}

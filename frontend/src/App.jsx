@@ -2,11 +2,10 @@ import { useState } from "react";
 import "./App.css";
 import axios from 'axios';
 
-function App() {
+function App({ account, setAccount }){
   const [message, setMessage] = useState("");
   const [chats, setChats] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
-
 
   const chat = async (e, message) => {
     e.preventDefault();
@@ -21,9 +20,10 @@ function App() {
 
     setMessage("");
     var request_data = {
-      "message": message
-      // TODO: Add metamask data here
+      "message": message,
+      "wallet": account,
     }
+    console.log(request_data);
 
     axios.post("http://localhost:8000/chat", request_data)
     .then((res) => {

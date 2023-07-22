@@ -17,10 +17,10 @@ app.add_middleware(
 
 class Message(BaseModel):
     message: str
-    # metamask_data: Optional[str] = None
+    wallet: Optional[str] = None
     
 
 @app.post("/chat")
 async def chat(message: Message):
     log.warn(message.message)
-    return {"message": "I'm chat gpt telling you how to run your life."}
+    return {"message": f"I'm chat gpt telling you how to run your life. Careful, I know your wallet {message.wallet}"}
