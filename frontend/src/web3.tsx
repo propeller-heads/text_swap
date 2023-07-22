@@ -3,7 +3,6 @@ import { ethers } from 'ethers';
 const INFURA_ETH_ENDPOINT = 'https://eth.public-rpc.com/';
 const provider = new ethers.providers.JsonRpcProvider(INFURA_ETH_ENDPOINT);
 
-
 export async function getTokenDecimals(contractAddress: string) {
     const erc20AbiFragment = [
         {

@@ -2,7 +2,7 @@ import { BlockchainProviderConnector} from '@1inch/fusion-sdk'
 import { ethers } from 'ethers';
 
 export class Web3ProviderConnector implements BlockchainProviderConnector {
-    private provider: ethers.BrowserProvider;
+    private provider: ethers.providers.Web3Provider;
 
     constructor(web3Provider: any) {
       this.provider = web3Provider;
