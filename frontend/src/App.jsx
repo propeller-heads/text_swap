@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useState } from "react"
+import FusionSDK from '@1inch/fusion-sdk'
+import {getTokenDecimals} from "./web3.tsx"
+import { Web3ProviderConnector } from "./provider.ts"
 import "./App.css";
 import axios from 'axios';
 import logo from "./assets/logo.png";
@@ -8,6 +11,24 @@ function App({ account, setAccount }){
   const [message, setMessage] = useState("");
   const [chats, setChats] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [provider, setProvider] = useState(undefined);
+
+  const order = async (data: string, provider: any): Promise<string> => {
+    const sellAmount = +data["sellAmount"] * 10 ** await getTokenDecimals(data["sellToken"]);
+    const buyAmount = +data["buyAmount"] * 10 ** await getTokenDecimals(data["buyToken"]);
+    const blockchainProvider = new Web3ProviderConnector(provider);
+    const sdk = new FusionSDK({
+      url: 'https://fusion.1inch.io',
+      network: 1,
+      blockchainProvider: blockchainProvider,
+    });
+    sdk.placeOrder({
+        fromTokenAddress: data["sellToken"],
+        toTokenAddress: data["buyToken"],
+        amount: sellAmount.toString(),
+        walletAddress: provider.provider.selectedAddress
+    }).then(console.log)
+  }
 
   const chat = async (e, message) => {
     e.preventDefault();
@@ -27,8 +48,7 @@ function App({ account, setAccount }){
     }
     console.log(request_data);
 
-    axios.post("http://localhost:8000/chat", request_data)
-    .then((res) => {
+    axios.post("http://localhost:8000/chat", request_data).then((res) => {
       const data = res.data; // Access the parsed JSON data directly from res.data
       console.log(data);
 
