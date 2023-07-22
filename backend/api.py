@@ -11,6 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from web3 import Web3
 from web3.providers import HTTPProvider
+
 from chatgpt_prompt import CHATGPT_PROMPT
 
 load_dotenv()
@@ -57,17 +58,17 @@ async def chat(message: Message):
         model="gpt-4", messages=[{"role": "user", "content": full_prompt}]
     )
     gpt_response = chat_completion.choices[0].message.content
-    return gpt_response
 
-    # Send result to user
-    # (with token descriptions (link to coingecko or smth))
-    api_response = requests.post(url, json=gpt_response)
+    api_output = {}
     try:
-        api_response.raise_for_status()
-    except requests.exceptions.HTTPError as e:
-        log.error(api_response.json())
+        swap_dict = eval(gpt_response)
+        api_output["message"] = str(swap_dict)
+        api_output["swap_response"] = True
+    except SyntaxError:
+        api_output["message"] = gpt_response
+        api_output["swap_response"] = False
+
+    return api_output
 
     # NEED NEW ENDPOINT FOR THIS:
     # If user agrees, send gpt response back to us, then format into 1inch fusion input
-
-    return {"message": "I'm chat gpt telling you how to run your life."}
