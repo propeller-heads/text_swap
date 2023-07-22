@@ -48,13 +48,16 @@
   background-color: #ff7f00; /* Darker orange on hover */
 }
 
+.wallet-info {
+  display: flex;
+  justify-content: flex-end; /* Align child divs to the start (left) */
+  align-items: center;
+}
+
 .connected-wallet {
-  position: fixed;
-  top: 20px;
-  right: 20px;
+  margin-right: 10px;
   padding: 10px 20px;
-  background-color: orange;
-  color: white;
+  color: orange;
   border: none;
   border-radius: 20px;
   font-size: 16px;
