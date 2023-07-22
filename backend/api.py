@@ -47,19 +47,38 @@ class Message(BaseModel):
         str({"token_balances": self.token_balances, "user_query": self.user_query})
 
 
-def _check_swap_integrity(swap: dict, balances: dict[str, float]):
+def _remove_impossible_swaps(swaps: dict, balances: dict[str, float]) -> list[dict]:
     # in_token in wallet balances
+    # out_token in our known tokens
     # in_amount does not exceed token balance
-    return (
-        swap["token_in"] in balances and balances[swap["token_in"]] >= swap["amount_in"]
-    )
+    possible_swaps = []
+    for swap in swaps.values():
+        if (
+            swap["token_in"] in balances
+            and balances[swap["token_in"]] >= swap["amount_in"]
+            and swap["token_out"] in TOKENS_CSV.symbol.values
+        ):
+            possible_swaps.append(swap)
+        else:
+            continue
+    return possible_swaps
+
+
+def _add_addresses_to_swaps(swaps: list[dict]):
+    for swap in swaps:
+        token_in = TOKENS_CSV.loc[TOKENS_CSV.symbol == swap["token_in"]]
+        token_out = TOKENS_CSV.loc[TOKENS_CSV.symbol == swap["token_out"]]
+
+        log.warning(token_in)
+        swap["token_in_address"] = to_checksum_address(token_in.index[0])
+        swap["token_out_address"] = to_checksum_address(token_out.index[0])
 
 
 @app.post("/chat")
 async def chat(message: Message):
     log.warning(message.user_query)
 
-    # message.user_query = message.user_query
+    # message.user_query = "sell ETH for USDC"
     # message.token_balances = {"ETH": 0.2, "USDC": 5000.0}
     # message.wallet_address = "0xCCBF1C9038D202a50B1dAd88134D47275CB213EF"
     if len(message.wallet_address):
@@ -70,7 +89,7 @@ async def chat(message: Message):
     token_balances = _get_token_balances(message.wallet_address.lower())
     message.token_balances.update(token_balances)
 
-    log.info(message)
+    log.warning(message)
 
     # Query chatgpt
     full_prompt = CHATGPT_PROMPT + str(message)
@@ -82,12 +101,16 @@ async def chat(message: Message):
     try:
         preprocessed_response = gpt_response.replace("\n", "").replace(" ", "").replace("'", "\"")
         swap_dict = json.loads(preprocessed_response)
+        log.warning(swap_dict)
+        swap_list = _remove_impossible_swaps(swap_dict, message.token_balances)
+        if len(swap_list) < 1:
+            api_output["message"] = "No known tokens were found for this trade."
+            return api_output
+        log.warning(swap_list)
+        _add_addresses_to_swaps(swap_list)
+        log.warning(swap_list)
         formatted_swaps = ""
-        for idx, swap in enumerate(swap_dict.values()):
-
-            if not _check_swap_integrity(swap, message.token_balances):
-                continue
-
+        for idx, swap in enumerate(swap_list):
             formatted_swaps = (
                 formatted_swaps
                 + f"> {swap['amount_in']} {swap['token_in']} to {swap['token_out']}"
@@ -100,7 +123,7 @@ async def chat(message: Message):
             f"? \n{formatted_swaps}"
         )
         api_output["message"] = json.dumps(message)
-        api_output["intent"] = swap_dict
+        api_output["intent"] = swap_list
     except json.decoder.JSONDecodeError:
         api_output["message"] = gpt_response
         api_output["intent"] = ""

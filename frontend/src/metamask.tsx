@@ -31,6 +31,7 @@ export const MetaMaskComponent: React.FC<MetaMaskProps>= ({ wallet, setWallet })
             const Accounts = await ethereum.request<string[]>({
               method: 'eth_requestAccounts',
             });
+            console.log("RWJFVKJWV", Accounts)
             if (Accounts && Accounts.length > 0) {
               console.log('Connected to MetaMask!', Accounts);
 
@@ -38,11 +39,16 @@ export const MetaMaskComponent: React.FC<MetaMaskProps>= ({ wallet, setWallet })
                 method: 'eth_getBalance',
                 params: [Accounts[0], 'latest'],
               }) as string
+              console.log("NOT formatted balance", balanceRaw)
+
               const balance = formatBalance(balanceRaw)
+              console.log("formatted balance", balance)
 
               const chainId: string = await window.ethereum?.request({
                 method: 'eth_chainId',
               }) as string
+              console.log("chainID", chainId)
+
               try {
                 const chain = blockchainConfig[chainId];
                 setWallet(
