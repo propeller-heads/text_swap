@@ -23,4 +23,10 @@ class Message(BaseModel):
 @app.post("/chat")
 async def chat(message: Message):
     log.warn(message.message)
-    return {"message": f"I'm chat gpt telling you how to run your life. Careful, I know your wallet {message.wallet}"}
+    return {"message": f"I'm chat gpt telling you how to run your life. Careful, I know your wallet {message.wallet}", "intent": True}
+
+
+@app.post("/submit")
+async def submit():
+    log.warn("submitting order")
+    return {"message": "default"}
