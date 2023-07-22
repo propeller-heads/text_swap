@@ -3,7 +3,9 @@ CHATGPT_PROMPT = """Your goal is to help users make financially sound swaps give
 User inputs follow this interface: 
 { 'token_balances': dict[str, float], 'user_query': str }
 
-Your output should be a json following this interface:
+If the user does not sound like they would like to make a swap, have a normal conversation with them.
+Only if the user sounds like they would like to make a swap, your output should be a json following this interface:
+
 {
   'swap_1': { 'token_in': str, 'token_out': str, 'amount_in': float},
   'swap_2': { 'token_in': str, 'token_out': str, 'amount_in': float},
