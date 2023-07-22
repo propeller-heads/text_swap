@@ -46,11 +46,14 @@ async def chat(message: Message):
     log.warning(message.user_query)
     # Get token balances. see moralis. or just top10
 
-    message.user_query = "sell 2000 USDC for DAI"
+    message.user_query = message.user_query
     message.token_balances = {"ETH": 0.2, "USDC": 5000.0}
-    message.wallet_address = to_checksum_address(
-        "0x202E76939c4c924a75dd1484D721056Bd382f816"
-    )
+    if len(message.wallet_address):
+        message.wallet_address = to_checksum_address(
+            message.wallet_address
+        )
+    else:
+        return {"message": "Please login with MetaMask to proceed.", "data": {}}
 
     # Query chatgpt
     full_prompt = CHATGPT_PROMPT + str(message)
@@ -58,7 +61,6 @@ async def chat(message: Message):
         model="gpt-4", messages=[{"role": "user", "content": full_prompt}]
     )
     gpt_response = chat_completion.choices[0].message.content
-
     api_output = {}
     try:
         swap_dict = eval(gpt_response)
@@ -71,7 +73,8 @@ async def chat(message: Message):
             if idx != len(swap_dict) - 1:
                 formatted_swaps += "\n"
 
-        message = f"Would you like to execute those swaps? \n{formatted_swaps}"
+        message = f"Would you like to execute {'these swaps' if len(swap_dict)>1  else 'this swap'} " \
+                  f"? \n{formatted_swaps}"
         api_output["message"] = json.dumps(message)
         api_output["data"] = swap_dict
     except SyntaxError:

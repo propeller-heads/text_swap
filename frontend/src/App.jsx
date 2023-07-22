@@ -31,7 +31,6 @@ function App({ account, setAccount }){
     .then((res) => {
       const data = res.data; // Access the parsed JSON data directly from res.data
       console.log(data);
-      console.log(JSON.parse(data.message));
 
 
       var msg = data.message;

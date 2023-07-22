@@ -17,8 +17,8 @@ Your output should only be the json described above. Do not write anything else 
 Assumptions:
 1. Guess the user's intent assuming he is a seasoned crypto trader. 
   -If the user_query is simply a token symbol and the token is not in the token_balances, assume the user wants to buy the token. 
-  -If the user_query is simply a token symbol and a large proportion of the token_balances is in the token, assume the user wants to sell the token.
-  -If the user_query is simply a token symbol and a low proportion of the token_balances is in the token, assume the user wants to buy more of the token. 
+  -If the user_query is simply a token symbol and a large portion of the token_balances is in the token, assume the user wants to sell the token.
+  -If the user_query is simply a token symbol and a low portion of the token_balances is in the token, assume the user wants to buy more of the token. 
 
 2. If the user wants to diversify its portfolio or a particular token, suggest swapping to profitable tokens not currently owned.
 
