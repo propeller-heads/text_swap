@@ -21,8 +21,8 @@ function App({ account, setAccount }){
 
     setMessage("");
     var request_data = {
-      "message": message,
-      "wallet": account,
+      "user_query": message,
+      "wallet_address": account,
     }
     console.log(request_data);
 
@@ -30,8 +30,8 @@ function App({ account, setAccount }){
     .then((res) => {
       const data = res.data; // Access the parsed JSON data directly from res.data
       console.log(data);
-      console.log(data.message);
-      
+      console.log(JSON.parse(data.message));
+
       if (data.intent) {
         msgs.push({ role: "agent", content: data, "buttons":{"yes": false, "no": false}});
       }
@@ -39,6 +39,12 @@ function App({ account, setAccount }){
         msgs.push({ role: "agent", content: data, "buttons":{"yes": true, "no": true}});
       }
 
+      var msg = data.message;
+      msg = msg.replace(/^"|"$/g, '');
+
+      msgs.push({ role: "agent",
+                content: msg});
+      setChats(msgs);
       setIsTyping(false);
       setChats(msgs);
       window.scrollTo(0, 1e10);
@@ -48,7 +54,7 @@ function App({ account, setAccount }){
   };
 
   return (
-    <main>      
+    <main>
       <div className="header">
         <img src={logo} className="App-logo" alt="broken" />
         <h1>Text Swap</h1>
