@@ -1,7 +1,7 @@
 import json
 import os
 from logging import getLogger
-from typing import Optional
+from typing import Optional, Any
 
 import openai
 import pandas as pd
@@ -97,18 +97,18 @@ async def chat(message: Message):
         model="gpt-4", messages=[{"role": "user", "content": full_prompt}]
     )
     gpt_response = chat_completion.choices[0].message.content
-    api_output = {}
+    api_output: dict[str, Any] = {}
     try:
-        preprocessed_response = gpt_response.replace("\n", "").replace(" ", "").replace("'", "\"")
+        preprocessed_response = (
+            gpt_response.replace("\n", "").replace(" ", "").replace("'", '"')
+        )
         swap_dict = json.loads(preprocessed_response)
-        log.warning(swap_dict)
         swap_list = _remove_impossible_swaps(swap_dict, message.token_balances)
         if len(swap_list) < 1:
             api_output["message"] = "No known tokens were found for this trade."
             return api_output
-        log.warning(swap_list)
         _add_addresses_to_swaps(swap_list)
-        log.warning(swap_list)
+
         formatted_swaps = ""
         for idx, swap in enumerate(swap_list):
             formatted_swaps = (
