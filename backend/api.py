@@ -47,7 +47,6 @@ async def chat(message: Message):
     # Get token balances. see moralis. or just top10
 
     message.user_query = message.user_query
-    message.token_balances = {"ETH": 0.2, "USDC": 5000.0}
     if len(message.wallet_address):
         message.wallet_address = to_checksum_address(
             message.wallet_address
@@ -63,7 +62,8 @@ async def chat(message: Message):
     gpt_response = chat_completion.choices[0].message.content
     api_output = {}
     try:
-        swap_dict = eval(gpt_response)
+        preprocessed_response = gpt_response.replace("\n", "").replace(" ", "").replace("'", "\"")
+        swap_dict = json.loads(preprocessed_response)
         formatted_swaps = ""
         for idx, swap in enumerate(swap_dict.values()):
             formatted_swaps = (
@@ -77,7 +77,7 @@ async def chat(message: Message):
                   f"? \n{formatted_swaps}"
         api_output["message"] = json.dumps(message)
         api_output["intent"] = swap_dict
-    except SyntaxError:
+    except json.decoder.JSONDecodeError:
         api_output["message"] = gpt_response
 
     return api_output

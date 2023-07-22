@@ -1,3 +1,4 @@
+import json
 import os
 
 import openai
@@ -8,7 +9,7 @@ from backend.api import Message
 from backend.chatgpt_prompt import CHATGPT_PROMPT
 
 
-def test_calling_chatgpt():
+def test_calling_chatgpt_make_swap():
     load_dotenv("../backend/.env")
     openai.api_key = os.getenv("OPENAI_API_KEY")
 
@@ -25,5 +26,27 @@ def test_calling_chatgpt():
         model="gpt-4", messages=[{"role": "user", "content": full_prompt}]
     )
     gpt_response = chat_completion.choices[0].message.content
+    preprocessed_response = gpt_response.replace("\n", "").replace(" ", "").replace("'", "\"")
 
-    assert eval(gpt_response)
+    assert json.loads(preprocessed_response)
+
+
+def test_calling_chatgpt_no_swap():
+    load_dotenv("../backend/.env")
+    openai.api_key = os.getenv("OPENAI_API_KEY")
+
+    message = Message(user_query="", wallet_address="")
+    message.user_query = "Hello how are you doing?"
+    message.token_balances = {"ETH": 0.2, "USDC": 5000.0}
+    message.wallet_address = to_checksum_address(
+        "0x202E76939c4c924a75dd1484D721056Bd382f816"
+    )
+
+    # Query chatgpt
+    full_prompt = CHATGPT_PROMPT + str(message)
+    chat_completion = openai.ChatCompletion.create(
+        model="gpt-4", messages=[{"role": "user", "content": full_prompt}]
+    )
+    gpt_response = chat_completion.choices[0].message.content
+
+    assert gpt_response
