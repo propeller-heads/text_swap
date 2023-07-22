@@ -35,17 +35,19 @@ const MetaMaskComponent: React.FC<MetaMaskProps>= ({ account, setAccount }) => {
       }
 
     return (
+  <header>
     <div className="connectBtns">
       {account ? (
         <div>
-          {account && <p>Connected Account: {account}</p>}
+          {account && <p className="connected-wallet">Connected Account: {account.slice(0,3)}..{account.slice(-3)}</p>}
         </div>
       ) : (
-        <button className="btn" onClick={ConnectToMetaMask}>
+        <button className="connect-wallet-button" onClick={ConnectToMetaMask}>
           Connect To MetaMask
         </button>
       )}
     </div>
+  </header>
   );
 };
 
