@@ -1,4 +1,4 @@
-import React, { ButtonHTMLAttributes, useState } from 'react';
+import React, { ButtonHTMLAttributes } from 'react';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'yes' | 'no';
@@ -9,7 +9,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 const Button: React.FC<ButtonProps> = ({ children, variant, isDisabled, ...rest }) => {
     var disability = isDisabled ? "disabled": "enabled"
   return (
-    <button {...rest} className={`${disability}-button`} disabled>
+    <button {...rest} className={`${disability}-button`}>
       {children}
     </button>
   );
