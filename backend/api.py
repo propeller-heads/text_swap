@@ -79,6 +79,7 @@ async def chat(message: Message):
         api_output["intent"] = swap_dict
     except json.decoder.JSONDecodeError:
         api_output["message"] = gpt_response
+        api_output["intent"] = ""
 
     return api_output
 
