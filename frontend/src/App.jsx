@@ -2,12 +2,26 @@ import { useState } from "react";
 import "./App.css";
 import axios from 'axios';
 import logo from "./assets/logo.png";
-import { FusionSDK, NetworkEnum, getLimitOrderV3Domain } from '@1inch/fusion-sdk'
+import { FusionSDK } from '@1inch/fusion-sdk'
+import { getTokenDecimals } from "./web3.tsx"
+import { Web3ProviderConnector } from "./provider.ts"
 
 function App({ account, setAccount }){
   const [message, setMessage] = useState("");
   const [chats, setChats] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [provider, setProvider] = useState(undefined);
+
+  const order = async (data: string, provider: any): Promise<string> => {
+    const sellAmount = +data["sellAmount"] * 10 ** await getTokenDecimals(data["sellToken"]);
+    const buyAmount = +data["buyAmount"] * 10 ** await getTokenDecimals(data["buyToken"]);
+    const blockchainProvider = new Web3ProviderConnector(provider);
+    const sdk = new FusionSDK({
+      url: 'https://fusion.1inch.io',
+      network: 1,
+      blockchainProvider: blockchainProvider,
+    });
+  }
 
   const chat = async (e, message) => {
     e.preventDefault();
