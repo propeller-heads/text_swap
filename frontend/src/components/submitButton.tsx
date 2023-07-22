@@ -18,7 +18,7 @@ const Button: React.FC<ButtonProps> = ({ children, variant, isDisabled, ...rest 
 interface ButtonPairProps {
   onYesClick: () => void;
   onNoClick: () => void;
-  isYesDisabled?: boolean; 
+  isYesDisabled?: boolean;
   isNoDisabled?: boolean;
 }
 
@@ -57,11 +57,11 @@ const ChatWithButtonPair: React.FC<ChatWithButtonPairProps> = ({
   isYesDisabled,
   isNoDisabled,
 }) => {
-      
+
   return (
     <div>
       <p className={chat.role === "user" ? "user_msg" : "agent_msg"}>
-      {chat.content.message.split('\\n').map((line, index, array) => (
+      {chat.content.message?.split('\\n').map((line, index, array) => (
     <span key={index}>
       {line}
       {index !== array.length - 1 && <br />}

@@ -16,7 +16,7 @@ function App({ account, setAccount }){
     window.scrollTo(0, 1e10);
 
     let msgs = chats;
-    msgs.push({ role: "user", content: {"message": message}, "buttons":{"yes": true, "no": true}});
+    msgs.push({ role: "user", content: {"message": message}, buttons:{yes: true, no: true}});
     setChats(msgs);
 
     setMessage("");
@@ -33,10 +33,10 @@ function App({ account, setAccount }){
       console.log(JSON.parse(data.message));
 
       if (data.intent) {
-        msgs.push({ role: "agent", content: data, "buttons":{"yes": false, "no": false}});
+        msgs.push({ role: "agent", content: data, buttons:{yes: false, no: false}});
       }
       else{
-        msgs.push({ role: "agent", content: data, "buttons":{"yes": true, "no": true}});
+        msgs.push({ role: "agent", content: data, buttons:{yes: true, no: true}});
       }
 
       var msg = data.message;
@@ -63,7 +63,7 @@ function App({ account, setAccount }){
       <section>
         {chats && chats.length
           ? chats.map((chat, index) => (
-            <ChatWithButtonPair chat={chat} onYesClick={() => console.log("Print yes")} onNoClick={() =>console.log("print nein")} isYesDisabled={chat.buttons.yes} isNoDisabled={chat.buttons.no}/>
+            <ChatWithButtonPair chat={chat} onYesClick={() => console.log("Print yes")} onNoClick={() =>console.log("print nein")} isYesDisabled={chat.buttons?.yes} isNoDisabled={chat.buttons?.no}/>
             ))
           : ""}
       </section>

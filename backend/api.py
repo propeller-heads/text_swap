@@ -73,7 +73,7 @@ async def chat(message: Message):
 
         message = f"Would you like to execute those swaps? \n{formatted_swaps}"
         api_output["message"] = json.dumps(message)
-        api_output["data"] = swap_dict
+        api_output["intent"] = swap_dict
     except SyntaxError:
         api_output["message"] = gpt_response
 
@@ -82,11 +82,8 @@ async def chat(message: Message):
     # NEED NEW ENDPOINT FOR THIS:
     # If user agrees, send gpt response back to us, then format into 1inch fusion input
 
-    log.warn(message.message)
-    return {"message": f"I'm chat gpt telling you how to run your life. Careful, I know your wallet {message.wallet}", "intent": True}
-
 
 @app.post("/submit")
 async def submit():
-    log.warn("submitting order")
-    return {"message": "default"}
+    log.warning("submitting order")
+    return {"message": "YES SUBMIT"}
