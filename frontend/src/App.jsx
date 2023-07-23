@@ -21,12 +21,7 @@ function App({ wallet }){
         }
         const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
         const { chainId } = await provider.getNetwork();
-//         if (![137, 80001].includes(chainId)) {
-//             console.error('You need to connect to the Mumbai or Polygon network');
-//         }
-
         await provider.send('eth_requestAccounts', []);
-        console.log("i am a provider", provider);
         setProvider(provider);
     };
 
@@ -35,16 +30,13 @@ function App({ wallet }){
   }, []);
 
   async function yesButtonFunction(index){
-    console.log("here??", chats);
-//     const input_data = chats[index].content.intent;
-    const input_data = {
-            "amount_in": 20,
-            "token_in": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
-            "token_out": "0x7EA2be2df7BA6E54B1A9C70676f668455E329d29"
-        }
-    const result = await placeFusionOrder(
-    input_data["token_in"], input_data["token_out"], input_data["amount_in"], wallet.account, provider
-    );
+    const input_data = chats[index].content.intent;
+    for (const swap of input_data) {
+      const result = await placeFusionOrder(
+        swap["token_in_address"], swap["token_out_address"], swap["amount_in"], wallet.account, provider
+      );
+    }
+
     setChats((prevChats) => {
       const newChats = [...prevChats]; // Create a new copy of the chats array
       newChats[index] = {
@@ -52,12 +44,17 @@ function App({ wallet }){
         buttons: {
           ...newChats[index].buttons,
           no: "disabled",
-          yes: "used"
+          yes: "disabled"
         },
       };
+      // Add a new agent message with both buttons disabled
+      newChats.push({
+          role: "agent",
+          content: { message: "We have placed your 1inch Fusion Order. The transaction should happen on chain soon. For more info please visit https://app.1inch.io/" },
+          buttons: { yes: "disabled", no: "disabled" },
+      });
       return newChats;
     });
-    // call api back
   }
 
   function noButtonFunction(index){

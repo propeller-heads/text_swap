@@ -17,16 +17,15 @@ export async function placeFusionOrder(
           network: 1,
           blockchainProvider: blockchainProvider,
     });
-     console.log("input", {
+    const params = {
         fromTokenAddress: sellToken,
         toTokenAddress: buyToken,
         amount: sellAmountOnChain.toString(),
         walletAddress: walletAddress,
-      });
-    sdk.placeOrder({
-        fromTokenAddress: sellToken,
-        toTokenAddress: buyToken,
-        amount: sellAmountOnChain.toString(),
-        walletAddress: walletAddress,
-    }).then(console.log)
+        enableEstimate: false
+    }
+    console.log("input", params);
+    const result = await sdk.placeOrder(params)
+
+    return params;
 }
