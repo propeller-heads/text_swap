@@ -1,12 +1,7 @@
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
   font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #380a53;
-
+  background-color: #000000;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -14,45 +9,53 @@
   -webkit-text-size-adjust: 100%;
 }
 
-html, body{
+html {
+  background-image: url("./assets/swap_chat_bg.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+body {
   scroll-behavior: smooth;
 }
 
 .header {
-  display: grid;
-  align-items: center; 
-  grid-template-columns: 1fr 1fr 1fr;
+  min-height: 30vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
  }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-  text-align: center;
-  position: sticky;
-  top: 0;
-  background-color: #380a53;
-}
+.pending_message {
+  background-color: #000000;
+  color: #ffffff;
+  font-size: 1em;
+  min-width: 200px;
+  border-radius: 8px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+ }
 
 main{
-  max-width: 800px;
+  width: 50%;
   margin: auto;
+  align-items: center;
 }
 
-input{
-  background-color: #461b5d;
-  border-radius: 50px;
-}
 
-p{
-  background-color: #ffcc00;
-  max-width: 70%;
-  padding: 15px;
-  border-radius: 50px;
+p {
+    background-color: #ab7df9;
+    color: #000000;
+    max-width: 60%;
+    padding: 15px;
+    margin-left: 10px;
+    border-radius: 10px;
 }
 
 p span{
   margin: 5px;
-  color: #000000
+  color: #000000;
 }
 
 p span:first-child{
@@ -61,9 +64,26 @@ p span:first-child{
 
 .user_msg{
   text-align: right;
-  margin-left: 30%;
-  display: flex;
-  flex-direction: row-reverse;
+  margin-left: 40%;
+  background-color: #f7c160;
+  margin-right: 10px;
+  opacity: 80%;
+  max-width: 70%;
+  border-radius: 10px;
+}
+
+.chat_box{
+  margin-top: 20px;
+  min-width: 200px;
+  background-color: rgba(56, 10, 83, .56);
+  border: 1px solid rgba(255, 255, 255, .05);
+  backdrop-filter: blur(14px);
+  height: 550px;
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 8px;
+  overflow: scroll;
+  border-bottom-left-radius: 0; /* Set the top left corner to have 0 border radius */
+  border-bottom-right-radius: 0;
 }
 
 .hide {
@@ -72,17 +92,19 @@ p span:first-child{
 }
 
 form{
-  text-align: center;
   position: sticky;
   bottom: 0;
 }
 
 input{
-  width: 100%;
+  width: 90%;
   height: 40px;
   border: none;
+  opacity:90%;
   padding: 10px;
-  font-size: 1.2rem;
+  padding-left: 5%;
+  padding-right: 5%;
+  font-size: 1rem;
   background-color: rgb(28, 23, 23);
 }
 
@@ -96,7 +118,7 @@ input:focus{
   font-size: 16px;
   cursor: pointer;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 8px;
   margin-right: 8px;
 }
 
@@ -110,6 +132,10 @@ input:focus{
   border: 1px solid #ccc;
   margin-right: 8px;
   margin-bottom: 20px;
+}
+
+.button-pair {
+  height: 0px;
 }
 
 .disabled-button { /* Styles for the disabled button */ 
@@ -126,16 +152,16 @@ input:focus{
   }
   
 
-  .used-button {
-    background-color: #1b0824;
-    color: white;
-    cursor: not-allowed; 
-    pointer-events: none;
-    border-radius: 50px;
-    padding: 8px 16px;
-    font-size: 16px;
-    cursor: pointer;
-    border: 1px solid #ccc;
-    margin-right: 8px;
-    margin-bottom: 20px;
-  }
+.used-button {
+  background-color: #1b0824;
+  color: white;
+  cursor: not-allowed;
+  pointer-events: none;
+  border-radius: 50px;
+  padding: 8px 16px;
+  font-size: 16px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  margin-right: 8px;
+  margin-bottom: 20px;
+}
