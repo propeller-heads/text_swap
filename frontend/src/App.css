@@ -50,6 +50,10 @@
   align-items: center;
 }
 
+.connectBtns {
+  height: 20px;
+}
+
 .connected-wallet {
   margin-right: 10px;
   padding: 10px 20px;
