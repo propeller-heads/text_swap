@@ -4,7 +4,6 @@ import {getTokenDecimals} from "./web3.tsx"
 import { Web3ProviderConnector } from "./provider.ts"
 import "./App.css";
 import axios from 'axios';
-import logo from "./assets/logo.png";
 import ChatWithButtonPair from './components/submitButton.tsx';
 
 function App({ wallet }){
@@ -119,31 +118,26 @@ function App({ wallet }){
 
   return (
     <main>
-      <div className="header">
-        <img src={logo} className="App-logo" alt="broken" />
-        <h1>Text Swap</h1>
-      </div>
-
-      <section>
+      <section className="chat_box">
         {chats && chats.length
           ? chats.map((chat, index) => (
             <ChatWithButtonPair chat={chat} onYesClick={() => yesButtonFuction(index)} onNoClick={() => noButtonFunction(index)} isYesDisabled={chat.buttons?.yes} isNoDisabled={chat.buttons?.no}/>
             ))
           : ""}
-      </section>
 
       <div className={isTyping ? "" : "hide"}>
         <p>
-          <i>{isTyping ? "Typing" : ""}</i>
+          <i>{isTyping ? "Typing..." : ""}</i>
         </p>
       </div>
-
+      </section>
       <form action="" onSubmit={(e) => chat(e, message)} >
         <input
           type="text"
           name="message"
+          className="pending_message"
           value={message}
-          placeholder="Lemme know what ya wanna swap, I'll do it for ya, bro..."
+          placeholder="Type a message"
           onChange={(e) => setMessage(e.target.value)}
         />
       </form>

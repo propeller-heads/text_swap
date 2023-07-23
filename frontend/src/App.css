@@ -3,22 +3,18 @@
 }
 
 .App-logo {
-  height: 10vmin;
+  height: 30vmin;
 }
 
 .App-header {
-  background-color: #380a53;
-  min-height: 100vh;
+  background-color: #00031a;
+  min-height: 30vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
-}
-
-.App-link {
-  color: #61dafb;
 }
 
 @keyframes App-logo-spin {
@@ -36,7 +32,7 @@
   top: 20px;
   right: 20px;
   padding: 10px 20px;
-  background-color: orange;
+  background-color: #000000;
   color: white;
   border: none;
   border-radius: 20px;
@@ -45,7 +41,7 @@
 }
 
 .connect-wallet-button:hover {
-  background-color: #ff7f00; /* Darker orange on hover */
+  background-color: #444444; /* Darker orange on hover */
 }
 
 .wallet-info {
@@ -57,7 +53,7 @@
 .connected-wallet {
   margin-right: 10px;
   padding: 10px 20px;
-  color: orange;
+  color: white;
   border: none;
   border-radius: 20px;
   font-size: 16px;

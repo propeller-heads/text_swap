@@ -76,7 +76,7 @@ export const MetaMaskComponent: React.FC<MetaMaskProps>= ({ wallet, setWallet })
         </div>
       ) : (
         <button className="connect-wallet-button" onClick={ConnectToMetaMask}>
-          Connect To MetaMask
+          Connect MetaMask
         </button>
       )}
     </div>
