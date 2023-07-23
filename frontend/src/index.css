@@ -135,7 +135,7 @@ input:focus{
 }
 
 .button-pair {
-  height: 0px;
+  display: inline-block;
 }
 
 .disabled-button { /* Styles for the disabled button */ 
