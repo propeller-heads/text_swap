@@ -1,11 +1,12 @@
 import { useState } from "react"
-import FusionSDK from '@1inch/fusion-sdk'
-import {getTokenDecimals} from "./web3.tsx"
-import { Web3ProviderConnector } from "./provider.ts"
+import { Web3ProviderConnector } from "./fusion/provider.ts"
 import "./App.css";
 import axios from 'axios';
 import logo from "./assets/logo.png";
 import ChatWithButtonPair from './components/submitButton.tsx';
+import { ethers } from 'ethers';
+import React from 'react';
+import { placeFusionOrder } from './fusion/fusion_order'
 
 function App({ wallet }){
   const [message, setMessage] = useState("");
@@ -13,24 +14,29 @@ function App({ wallet }){
   const [isTyping, setIsTyping] = useState(false);
   const [provider, setProvider] = useState(undefined);
 
-  const order = async (data: string, provider: any): Promise<string> => {
-    const sellAmount = +data["sellAmount"] * 10 ** await getTokenDecimals(data["sellToken"]);
-    const buyAmount = +data["buyAmount"] * 10 ** await getTokenDecimals(data["buyToken"]);
-    const blockchainProvider = new Web3ProviderConnector(provider);
-    const sdk = new FusionSDK({
-      url: 'https://fusion.1inch.io',
-      network: 1,
-      blockchainProvider: blockchainProvider,
-    });
-    sdk.placeOrder({
-        fromTokenAddress: data["sellToken"],
-        toTokenAddress: data["buyToken"],
-        amount: sellAmount.toString(),
-        walletAddress: provider.provider.selectedAddress
-    }).then(console.log)
-  }
 
-  function yesButtonFuction(index){
+  async function loadWeb3Provider(){
+        if (!window.ethereum) {
+            console.error('You need to connect to the MetaMask extension');
+        }
+        const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
+        const { chainId } = await provider.getNetwork();
+        await provider.send('eth_requestAccounts', []);
+        setProvider(provider);
+    };
+
+  React.useEffect(() => { // Add parentheses here
+    loadWeb3Provider();
+  }, []);
+
+  async function yesButtonFunction(index){
+    const input_data = chats[index].content.intent;
+    for (const swap of input_data) {
+      const result = await placeFusionOrder(
+        swap["token_in_address"], swap["token_out_address"], swap["amount_in"], wallet.account, provider
+      );
+    }
+
     setChats((prevChats) => {
       const newChats = [...prevChats]; // Create a new copy of the chats array
       newChats[index] = {
@@ -38,13 +44,17 @@ function App({ wallet }){
         buttons: {
           ...newChats[index].buttons,
           no: "disabled",
-          yes: "used"
+          yes: "disabled"
         },
       };
+      // Add a new agent message with both buttons disabled
+      newChats.push({
+          role: "agent",
+          content: { message: "We have placed your 1inch Fusion Order. The transaction should happen on chain soon. For more info please visit https://app.1inch.io/" },
+          buttons: { yes: "disabled", no: "disabled" },
+      });
       return newChats;
     });
-
-    // call api back
   }
 
   function noButtonFunction(index){
@@ -100,6 +110,7 @@ function App({ wallet }){
       console.log(data);
 
       if (data.intent) {
+      console.log("intent", data.intent);
         msgs.push({ role: "agent", content: data, buttons:{yes: "enabled", no: "enabled"}});
       }
       else{
@@ -127,7 +138,7 @@ function App({ wallet }){
       <section>
         {chats && chats.length
           ? chats.map((chat, index) => (
-            <ChatWithButtonPair chat={chat} onYesClick={() => yesButtonFuction(index)} onNoClick={() => noButtonFunction(index)} isYesDisabled={chat.buttons?.yes} isNoDisabled={chat.buttons?.no}/>
+            <ChatWithButtonPair chat={chat} onYesClick={() => yesButtonFunction(index)} onNoClick={() => noButtonFunction(index)} isYesDisabled={chat.buttons?.yes} isNoDisabled={chat.buttons?.no}/>
             ))
           : ""}
       </section>
