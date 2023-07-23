@@ -46,6 +46,12 @@ class Message(BaseModel):
     def __repr__(self):
         str({"token_balances": self.token_balances, "user_query": self.user_query})
 
+    def formatted_balances(self):
+        b = ""
+        for k, v in self.token_balances.items():
+            b += f"{v} {k}  "
+        return b
+
 
 def _remove_impossible_swaps(swaps: dict, balances: dict[str, float]) -> list[dict]:
     # in_token in wallet balances
@@ -119,8 +125,9 @@ async def chat(message: Message):
                 formatted_swaps += "\n"
 
         message = (
-            f"Would you like to execute {'these swaps' if len(swap_dict)>1  else 'this swap'} "
-            f"? \n{formatted_swaps}"
+            f"Here are your token balances: {message.formatted_balances()} "
+            f"\nWould you like to execute {'these swaps' if len(swap_dict)>1  else 'this swap'} ? "
+            f"\n{formatted_swaps}"
         )
         api_output["message"] = json.dumps(message)
         api_output["intent"] = swap_list
